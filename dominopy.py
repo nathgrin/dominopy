@@ -163,19 +163,22 @@ def make_json_file(fname):
     for func in funcs:
         obj = new_object() 
         
-        print(func)
+        # print(func)
         name,names = func_to_name(func,names)
-        print(name)
+        # print(name)
         the_text = func_to_text(func) # Make formula
         names.append(name)
         obj['name'] = name
-        obj['formula']['text'] = the_text
         obj['func'] = func# marshal.dumps(tstfunc.func_code)
+        obj['formula']['text'] = the_text
+        obj['formula']['fname'] = '%s_formula.png'%(name)
+        obj['graph']['fname'] = '%s_graph.png'%(name)
+        obj['table']['fname'] = '%s_table.png'%(name)
         obj_list.append(obj)
         
         
     
-    print(obj_list)
+    # print(obj_list)
     with open(fname,'w') as outfile:
         json.dump(obj_list,outfile, indent=4)
 
@@ -194,7 +197,7 @@ def make_figures(loc,obj):
     ax.text(0.5, 0.5, obj['formula'].get('text',""), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
     
     format_formulatable(ax)
-    plt.savefig(loc+'%s_formula.png'%(name), bbox_inches='tight')
+    plt.savefig(loc+obj['graph']['fname'], bbox_inches='tight')
     
     ## Table
     fig,ax = _inifig()
@@ -217,7 +220,7 @@ def make_figures(loc,obj):
                 cell.visible_edges += "R"
     
     format_formulatable(ax)
-    plt.savefig(loc+'%s_table.png'%(name), bbox_inches='tight')
+    plt.savefig(loc+obj['table']['fname'], bbox_inches='tight')
     
     
     ## Graph
@@ -231,7 +234,7 @@ def make_figures(loc,obj):
     
     format_graph(ax)
     
-    plt.savefig(loc+'%s_graph.png'%(name), bbox_inches='tight')
+    plt.savefig(loc+obj['graph']['fname'], bbox_inches='tight')
     
     # plt.savefig('tst.png', bbox_inches='tight')
     # plt.show()
@@ -242,24 +245,69 @@ def load_json_file(fname):
         in_obj_list = json.load(infile)
     return in_obj_list
 
-def main():
-    print("Hello World!")
-    loc = "linquad/"
-    fname = "out.json"
 
-    make_json_file(loc+fname)
+def make_page(loc,obj_list):
+    
+    ## Choose objects
+    dictkeys = ['formula','graph','table']
+    order = np.random.permutation(len(obj_list))
+    print( order )
+    dict_inds = list(np.random.permutation(3))
+    while True:
+        attempt = np.random.permutation(3)
+        if dict_inds[-1] == attempt[0]:
+            continue
+        dict_inds.extend(attempt)
+        
+        if len(dict_inds) > 2*len(order):
+            dict_inds = dict_inds[:2*len(order)]
+            break
+    
+    print(dict_inds)
+    
+    file_list = []
+    for i,ind in enumerate(order):
+        print(i)
+        obj = obj_list[ind]
+        file_list.append(  obj[dictkeys[dict_inds[2*i]]]['fname'])
+        file_list.append(obj[dictkeys[dict_inds[2*i+1]]]['fname'])
+    print(file_list)
+    
+    ## file_list to page
+    from PIL import Image
+
+    width, height = int(8.27 * 300), int(11.7 * 300) # A4 at 300dpi
+
+    groups = [file_list[i:i+4] for i in range(0, len(file_list), 4)]
+    for i, group in enumerate(groups):
+        page = Image.new('RGB', (width, height), 'white')
+        page.paste(Image.open(loc+group[0]), box=(0, 0))
+        page.paste(Image.open(loc+group[1]), box=(int(width/2.+.5), 0))
+        page.paste(Image.open(loc+group[2]), box=(0, int(height/2.+.5)))
+        page.paste(Image.open(loc+group[3]), box=(int(width/2.+.5), int(height/2.+.5)))
+        page.save(loc+'page{}.pdf'.format(i))
+
+
+def main():
+    loc = "linquad/"
+    fname = "cards.json"
+
+    print( "Making .. ",loc, fname )
+    
+    # make_json_file(loc+fname)
     
     in_obj_list = load_json_file(loc+fname)
     
     
     # Make figures per object
-    for i in range(len(in_obj_list)):
-        obj = in_obj_list[i]
-        
-        make_figures(loc,obj)
+    if False:
+        for i in range(len(in_obj_list)):
+            obj = in_obj_list[i]
+            
+            make_figures(loc,obj)
     
     # Combine figures to page
-    
+    make_page(loc,in_obj_list)
     
     
 if __name__ == "__main__":
