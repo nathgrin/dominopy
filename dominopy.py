@@ -252,12 +252,13 @@ def main():
     in_obj_list = load_json_file(loc+fname)
     
     
+    # Make figures per object
     for i in range(len(in_obj_list)):
         obj = in_obj_list[i]
-        # obj['func'] = types.FunctionType(the_obj['func'], globals(), "some_func_name") 
         
         make_figures(loc,obj)
-        
+    
+    # Combine figures to page
     
     
     
