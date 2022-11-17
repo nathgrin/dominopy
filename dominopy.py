@@ -23,6 +23,20 @@ plt.rc(('xtick','ytick'), labelsize=8)#, direction='in' )
 
 
 def format_graph(ax):
+    
+    thelim = list(ax.get_xlim())
+    if thelim[0] > -0.5:
+        thelim[0] = -0.5
+    if thelim[1] < 0.5:
+        thelim[1] = 0.5
+    ax.set_xlim(thelim)
+    thelim = list(ax.get_ylim())
+    if thelim[0] > -0.5:
+        thelim[0] = -0.5
+    if thelim[1] < 0.5:
+        thelim[1] = 0.5
+    ax.set_ylim(thelim)
+    
     ax.spines['left'].set_position('zero')
     ax.spines['right'].set_color('none')
     ax.spines['right'].set_position('zero')
@@ -55,50 +69,9 @@ def draw_ax_frame(fig,ax):
     ypad = factor * height
     fig.add_artist(plt.Rectangle((x0-xpad, y0-ypad), width+2*xpad, height+2*ypad, edgecolor='black', linewidth=2, fill=False))
 
-
-def make_pages(obj_list):
-    
-    fig,axarr = plt.subplots(4,5, sharex=False, sharey=False, figsize=(11.6929,8.26772)) # (8.26772,11.6929)
-
-    pad = 0.5
-    sp = 0.05
-    # plt.subplots_adjust(left=0.05,right=0.95,bottom=0.05,top=0.95,wspace=0.05,hspace=0.05)
-    # plt.subplots_adjust(left=sp,right=1.-sp,bottom=sp,top=1-sp,wspace=pad,hspace=1.5*pad)
-    plt.subplots_adjust(left=sp,right=1.-sp,bottom=0.075,top=1-sp,wspace=pad,hspace=1.5*pad)
-    # plt.subplots_adjust(left=pad*5,right=1.-pad*5,bottom=pad*4,top=1.-pad*4,wspace=pad,hspace=pad)
-    # plt.setp(axarr, xticks=[], yticks=[])
-    
-    print(axarr)
-    
-    for i,row in enumerate(axarr):
-        for j,ax in enumerate(row):
-            # ax.plot(xarr, yarr)
-
-            format_graph(ax)
-            draw_ax_frame(fig,ax)
-            
-            print(ax.get_xlim())
-            print(ax.xaxis.get_major_ticks())
-            print([x.get_loc() for x in ax.xaxis.get_major_ticks()])
-            # ax.set_xticks([x for x in ax.xaxis.get_major_ticks() if float(x.get_loc()) != 0.], minor=True)
-            print('tickz',ax.get_xticks(),ax.get_yticks())
-    
-    while True:
-        try:
-            plt.savefig('tst.pdf')
-            break
-        except:
-            input("Close pdf and press enter to try again")
-            
-    plt.show()
-    
     
     
 def make_json_file(fname):
-    def _func(x):
-        return x*x
-    xarr = np.linspace(-5,5,1000)
-    yarr = _func(xarr)
     
     obj_list = []
     
@@ -131,7 +104,9 @@ def make_json_file(fname):
                         the_text += "-"
                     
                 if term != 0 and i != degree:
-                    the_text += "x^{%i}"%(degree-i)
+                    the_text += "x"
+                    if degree-i != 1:
+                        the_text += "^{%i}"%(degree-i)
             the_text += "$"
         else:
             print("WARNING: Did not recognize func type: ",func)   
@@ -153,8 +128,15 @@ def make_json_file(fname):
     funcs = [
         {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [2,0]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [1,0,0]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,0,2]}# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,0,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,4]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,1,0]}# ax^2 + bx + c
     ]
     
     names = []
@@ -192,12 +174,14 @@ def make_figures(loc,obj):
         
         fig.subplots_adjust(left=0,right=1.,bottom=0,top=1.,wspace=0.,hspace=0.)
         return fig,ax
+
     ## Formula
     fig,ax = _inifig()
     ax.text(0.5, 0.5, obj['formula'].get('text',""), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
     
     format_formulatable(ax)
-    plt.savefig(loc+obj['graph']['fname'], bbox_inches='tight')
+    plt.savefig(loc+obj['formula']['fname'], bbox_inches='tight')
+    plt.close(fig)
     
     ## Table
     fig,ax = _inifig()
@@ -221,13 +205,31 @@ def make_figures(loc,obj):
     
     format_formulatable(ax)
     plt.savefig(loc+obj['table']['fname'], bbox_inches='tight')
+    plt.close(fig)
     
     
     ## Graph
     fig,ax = _inifig()
     
+    def func_from_x(func,xarr):
+        if func['type'] == 'polynomial':
+            
+            out = np.zeros(xarr.shape)
+            # print(out)
+            deg = len(func['coeff'])
+            for i,coeff in enumerate(func['coeff']):
+                # print(i,coeff)
+                out += coeff*np.power(xarr,deg-i-1)
+                
+            
+        else:
+            print('WARNING: Did not recognize function type: ',func)
+            out = xarr
+            
+        return out
+    
     xarr = np.linspace(obj['graph']['xrange'][0],obj['graph']['xrange'][1],100)
-    yarr = xarr*xarr
+    yarr = func_from_x(obj['func'],xarr)
     # print(obj['graph']['xrange'][0],obj['graph']['xrange'][1])
     # print(xarr,yarr)
     ax.plot(xarr,yarr)
@@ -235,9 +237,8 @@ def make_figures(loc,obj):
     format_graph(ax)
     
     plt.savefig(loc+obj['graph']['fname'], bbox_inches='tight')
+    plt.close(fig)
     
-    # plt.savefig('tst.png', bbox_inches='tight')
-    # plt.show()
 
 def load_json_file(fname):
     
@@ -245,16 +246,14 @@ def load_json_file(fname):
         in_obj_list = json.load(infile)
     return in_obj_list
 
-
-def make_page(loc,obj_list):
-    
+def make_fname_list(loc,obj_list):
     ## Choose objects
     dictkeys = ['formula','graph','table']
     order = np.random.permutation(len(obj_list))
-    print( order )
-    dict_inds = list(np.random.permutation(3))
+    # print( order )
+    dict_inds = list(np.random.permutation(2))
     while True:
-        attempt = np.random.permutation(3)
+        attempt = np.random.permutation(2)
         if dict_inds[-1] == attempt[0]:
             continue
         dict_inds.extend(attempt)
@@ -263,29 +262,69 @@ def make_page(loc,obj_list):
             dict_inds = dict_inds[:2*len(order)]
             break
     
-    print(dict_inds)
+    # print(dict_inds)
     
-    file_list = []
+    fname_list = []
     for i,ind in enumerate(order):
-        print(i)
+        # print(i)
         obj = obj_list[ind]
-        file_list.append(  obj[dictkeys[dict_inds[2*i]]]['fname'])
-        file_list.append(obj[dictkeys[dict_inds[2*i+1]]]['fname'])
-    print(file_list)
+        fname_list.append(  loc+obj[dictkeys[dict_inds[2*i]]]['fname'])
+        fname_list.append(loc+obj[dictkeys[dict_inds[2*i+1]]]['fname'])
+    fname_list.append(fname_list.pop(0)) # shift all by 1
     
-    ## file_list to page
-    from PIL import Image
+    # print(fname_list)
+    
+    return fname_list
+def make_pages(loc,fname_list):
+    
+    
+    
+    ## fname_list to page
+    from PIL import Image,ImageDraw
 
-    width, height = int(8.27 * 300), int(11.7 * 300) # A4 at 300dpi
-
-    groups = [file_list[i:i+4] for i in range(0, len(file_list), 4)]
-    for i, group in enumerate(groups):
+    width, height = int(11.693 * 300),int(8.268 * 300) # A4 at 300dpi
+    cellw,cellh = width//5,height//4
+    imagew,imageh = int(1.9*300),int(1.9*300)
+    # imagew,imageh = int(1.8*300),int(1.8*300)
+    padw,padh = (cellw-imagew)//2,(cellh-imageh)//2
+    
+    groups = [fname_list[i:i+20] for i in range(0, len(fname_list), 20)]
+    for ind_group, group in enumerate(groups):
+        print(ind_group,group)
         page = Image.new('RGB', (width, height), 'white')
-        page.paste(Image.open(loc+group[0]), box=(0, 0))
-        page.paste(Image.open(loc+group[1]), box=(int(width/2.+.5), 0))
-        page.paste(Image.open(loc+group[2]), box=(0, int(height/2.+.5)))
-        page.paste(Image.open(loc+group[3]), box=(int(width/2.+.5), int(height/2.+.5)))
-        page.save(loc+'page{}.pdf'.format(i))
+        
+        xi,ytoggle,yrow = 0,0,0
+        for fname in group:
+            # print(xi,ytoggle,yrow)
+            xcoord = padw + xi*cellw
+            ycoord = padh + (yrow+ytoggle)*cellh
+            # print(xcoord,ycoord)
+            
+            with Image.open(fname) as Im:
+                if ytoggle == 0:
+                    Im = Im.rotate(180)
+                Im = Im.resize((imagew,int(Im.height*imagew/Im.width)))
+                page.paste(Im, box=(xcoord, ycoord))
+            
+            if ytoggle:
+                if xi != 4:
+                    xi += 1
+                else:
+                    xi = 0
+                    yrow += 2
+            ytoggle = 1-ytoggle
+            
+        draw = ImageDraw.Draw(page)
+        
+        lw = 20
+        # draw.line( (0, page.size[1], page.size[0], 0) ,width=lw, fill=128)
+        for i in range(6):
+            draw.line( [(i*cellw,0),(i*cellw,height)] ,width=lw, fill=256)
+        for i in range(5):
+            draw.line( [(0,i*cellh),(width,i*cellh)] ,width=lw, fill=256)
+        
+        
+        page.save(loc+'page{}.pdf'.format(ind_group))
 
 
 def main():
@@ -294,20 +333,21 @@ def main():
 
     print( "Making .. ",loc, fname )
     
-    # make_json_file(loc+fname)
+    make_json_file(loc+fname)
     
     in_obj_list = load_json_file(loc+fname)
     
     
     # Make figures per object
-    if False:
+    if True:
         for i in range(len(in_obj_list)):
             obj = in_obj_list[i]
             
             make_figures(loc,obj)
     
     # Combine figures to page
-    make_page(loc,in_obj_list)
+    fnames = make_fname_list(loc,in_obj_list)
+    make_pages(loc,fnames)
     
     
 if __name__ == "__main__":
