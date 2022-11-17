@@ -140,19 +140,19 @@ def make_json_file(fname):
     def func_to_name(func,names):
         name = ""
         if func['type'] == 'polynomial':
-            base_name = 'poly_'+str(len(func['coeff']))+'_'+str(func['coeff'][0])
+            base_name = 'poly_deg'+str(len(func['coeff'])-1)+'_'+str(func['coeff'][0])
             
         i = 0
         name = base_name
         while name in names:
             i += 1
-            name = base_name + "_%i"%(i)
+            name = base_name + "_n%i"%(i)
         names.append(name)
         return name,names
     
     funcs = [
-        {'type': 'polynomial','coeff': [0,1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [0,-1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [-1,0,2]}# ax^2 + bx + c
     ]
@@ -236,15 +236,22 @@ def make_figures(loc,obj):
     # plt.savefig('tst.png', bbox_inches='tight')
     # plt.show()
 
+def load_json_file(fname):
+    
+    with open(fname) as infile:
+        in_obj_list = json.load(infile)
+    return in_obj_list
+
 def main():
     print("Hello World!")
     loc = "linquad/"
     fname = "out.json"
 
-    make_json_file(fname)
+    make_json_file(loc+fname)
     
-    with open(fname) as infile:
-        in_obj_list = json.load(infile)
+    in_obj_list = load_json_file(loc+fname)
+    
+    
     for i in range(len(in_obj_list)):
         obj = in_obj_list[i]
         # obj['func'] = types.FunctionType(the_obj['func'], globals(), "some_func_name") 
