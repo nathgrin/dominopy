@@ -10,7 +10,7 @@ plt.rc('mathtext',fontset='stix')
 plt.rc('lines', linewidth=1.8,marker='None',markersize=8 )
 plt.rc('axes', linewidth=1.5,labelsize=12,prop_cycle=plt.cycler(color=('k','r','c','darkorange','steelblue','hotpink','gold','b','maroon','darkgreen')) )
 plt.rc(('xtick.major','ytick.major'), size=5.2,width=1.5)
-# plt.rc(('xtick.minor','ytick.minor'), size=3.2,width=1.5,visible=True)
+plt.rc(('xtick.minor','ytick.minor'), size=3.2,width=1.5,visible=True)
 plt.rc(('xtick','ytick'), labelsize=8)#, direction='in' )
 # plt.rc(('xtick'), top=True,bottom=True ) # For some stupid reason you have to do these separately
 # plt.rc(('ytick'), left=True,right=True )
@@ -102,8 +102,6 @@ def make_json_file(fname):
     
     obj_list = []
     
-    def tstfunc(x):
-        return x*x
     
     def new_object():
         thedict = {}
@@ -111,15 +109,71 @@ def make_json_file(fname):
         thedict['formula'] = {'text': ""}
         thedict['graph'] = {'xrange':[-5,5]}
         thedict['table'] = {'range':[-5,-3,-1,0,1,3,5]}
-        thedict['func'] = ""
+        thedict['func'] = {'type': 'polynomial','coeff': [0,0,0]}# ax^2 + bx + c
         
         return thedict
+    
+    def func_to_text(func):
+        the_text = ""
+        if func['type'] == 'polynomial':
+            degree= len(func['coeff'])-1
+            the_text = "$y="
+            for i,term in enumerate(func['coeff']):
+                if term > 0: # Positive
+                    if the_text[-1] != "=":
+                        the_text += "+"
+                    if term != 1:
+                        the_text += str(term)
+                elif term < 0: # Negative
+                    if term != -1:
+                        the_text += str(term)
+                    else:
+                        the_text += "-"
+                    
+                if term != 0 and i != degree:
+                    the_text += "x^{%i}"%(degree-i)
+            the_text += "$"
+        else:
+            print("WARNING: Did not recognize func type: ",func)   
+        return the_text
+    
+    def func_to_name(func,names):
+        name = ""
+        if func['type'] == 'polynomial':
+            base_name = 'poly_'+str(len(func['coeff']))+'_'+str(func['coeff'][0])
+            
+        i = 0
+        name = base_name
+        while name in names:
+            i += 1
+            name = base_name + "_%i"%(i)
+        names.append(name)
+        return name,names
+    
+    funcs = [
+        {'type': 'polynomial','coeff': [0,1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [0,-1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,0,2]}# ax^2 + bx + c
+    ]
+    
+    names = []
+    
         
-    for i in range(2):
-        obj = new_object()
-        obj['formula']['text'] = "$y=2x-%d$"%(i)
-        # obj['func'] = marshal.dumps(tstfunc.func_code)
+    for func in funcs:
+        obj = new_object() 
+        
+        print(func)
+        name,names = func_to_name(func,names)
+        print(name)
+        the_text = func_to_text(func) # Make formula
+        names.append(name)
+        obj['name'] = name
+        obj['formula']['text'] = the_text
+        obj['func'] = func# marshal.dumps(tstfunc.func_code)
         obj_list.append(obj)
+        
+        
     
     print(obj_list)
     with open(fname,'w') as outfile:
@@ -127,7 +181,7 @@ def make_json_file(fname):
 
 def make_figures(loc,obj):
     
-    name = obj.get('name', "tst")
+    name = obj.get('name', "noname")
     
     def _inifig():
         fig = plt.figure(figsize=(2,2),frameon=True) # (8.26772,11.6929)
@@ -140,7 +194,7 @@ def make_figures(loc,obj):
     ax.text(0.5, 0.5, obj['formula'].get('text',""), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
     
     format_formulatable(ax)
-    plt.savefig('%s_formula.png'%(name), bbox_inches='tight')
+    plt.savefig(loc+'%s_formula.png'%(name), bbox_inches='tight')
     
     ## Table
     fig,ax = _inifig()
@@ -163,7 +217,7 @@ def make_figures(loc,obj):
                 cell.visible_edges += "R"
     
     format_formulatable(ax)
-    plt.savefig('%s_table.png'%(name), bbox_inches='tight')
+    plt.savefig(loc+'%s_table.png'%(name), bbox_inches='tight')
     
     
     ## Graph
@@ -171,13 +225,13 @@ def make_figures(loc,obj):
     
     xarr = np.linspace(obj['graph']['xrange'][0],obj['graph']['xrange'][1],100)
     yarr = xarr*xarr
-    print(obj['graph']['xrange'][0],obj['graph']['xrange'][1])
-    print(xarr,yarr)
+    # print(obj['graph']['xrange'][0],obj['graph']['xrange'][1])
+    # print(xarr,yarr)
     ax.plot(xarr,yarr)
     
     format_graph(ax)
-    plt.savefig('%s_graph.png'%(name), bbox_inches='tight')
     
+    plt.savefig(loc+'%s_graph.png'%(name), bbox_inches='tight')
     
     # plt.savefig('tst.png', bbox_inches='tight')
     # plt.show()
