@@ -22,6 +22,31 @@ plt.rc(('xtick','ytick'), labelsize=8)#, direction='in' )
 # plt.rc('image',cmap='gist_rainbow')
 
 
+def merge_pdfs(filenames,outfilename,delete=False):
+    ''' () -> float
+
+    '''
+    from PyPDF2 import PdfFileMerger, PdfFileReader
+
+    merger = PdfFileMerger()
+    for filename in filenames:
+        with open(filename,'rb') as fd:
+            merger.append(PdfFileReader(fd))
+
+    while True:
+        try:
+            merger.write(outfilename)
+            break
+        except IOError as msg:
+            print("Could not write file:",msg)
+            input( "Fix it and press Enter to try again" )
+
+    if delete:
+        from os import remove
+        for filename in filenames: remove(filename)
+
+    return
+
 def format_graph(ax):
     
     thelim = list(ax.get_xlim())
@@ -81,7 +106,7 @@ def make_json_file(fname):
         # thedict['name'] = ""
         thedict['formula'] = {'text': ""}
         thedict['graph'] = {'xrange':[-5,5]}
-        thedict['table'] = {'range':[-5,-3,-1,0,1,3,5]}
+        thedict['table'] = {'range':[-3,-2,-1,0,1,2,3]}
         thedict['func'] = {'type': 'polynomial','coeff': [0,0,0]}# ax^2 + bx + c
         
         return thedict
@@ -126,17 +151,30 @@ def make_json_file(fname):
         return name,names
     
     funcs = [
+        {'type': 'polynomial','coeff': [2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [0.5]},# ax^2 + bx + c
+        
         {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [2,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-3,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-0.5,0]},# ax^2 + bx + c
         
         {'type': 'polynomial','coeff': [1,0,0]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [-1,0,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,0,-2]},# ax^2 + bx + c
         {'type': 'polynomial','coeff': [1,0,4]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,1,0]}# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,-2,0]}# ax^2 + bx + c
     ]
     
     names = []
@@ -165,11 +203,27 @@ def make_json_file(fname):
         json.dump(obj_list,outfile, indent=4)
 
 def make_figures(loc,obj):
+    def func_from_x(func,xarr):
+        if func['type'] == 'polynomial':
+            
+            out = np.zeros(xarr.shape)
+            # print(out)
+            deg = len(func['coeff'])
+            for i,coeff in enumerate(func['coeff']):
+                # print(i,coeff)
+                out += coeff*np.power(xarr,deg-i-1)
+                
+            
+        else:
+            print('WARNING: Did not recognize function type: ',func)
+            out = xarr
+            
+        return out
     
     name = obj.get('name', "noname")
     
     def _inifig():
-        fig = plt.figure(figsize=(2,2),frameon=True) # (8.26772,11.6929)
+        fig = plt.figure(figsize=(3,3),frameon=True) # (8.26772,11.6929)
         ax =  fig.add_axes((0, 0, 1, 1))#fig.add_subplot(111)
         
         fig.subplots_adjust(left=0,right=1.,bottom=0,top=1.,wspace=0.,hspace=0.)
@@ -177,7 +231,7 @@ def make_figures(loc,obj):
 
     ## Formula
     fig,ax = _inifig()
-    ax.text(0.5, 0.5, obj['formula'].get('text',""), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
+    ax.text(0.5, 0.5, obj['formula'].get('text',""), fontsize=24, horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
     
     format_formulatable(ax)
     plt.savefig(loc+obj['formula']['fname'], bbox_inches='tight')
@@ -188,9 +242,12 @@ def make_figures(loc,obj):
     
     tablecontent = [[float(x) for x in obj['table']['range']],[]]
     
-    tablecontent[1] = [ 2*x+1 for x in tablecontent[0] ]
+    tablecontent[1] = func_from_x(obj['func'],np.array(tablecontent[0]))
     
-    the_table = ax.table( cellText = tablecontent , rowLabels=['$x$','$y$'], edges='open', loc='center')
+    the_table = ax.table( cellText = tablecontent , rowLabels=['$x$','$y$'], edges='open', loc='center',cellLoc='center')
+    
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(10)
     
     for j in range(2):
         for i in range(len(tablecontent[0])):
@@ -211,28 +268,13 @@ def make_figures(loc,obj):
     ## Graph
     fig,ax = _inifig()
     
-    def func_from_x(func,xarr):
-        if func['type'] == 'polynomial':
-            
-            out = np.zeros(xarr.shape)
-            # print(out)
-            deg = len(func['coeff'])
-            for i,coeff in enumerate(func['coeff']):
-                # print(i,coeff)
-                out += coeff*np.power(xarr,deg-i-1)
-                
-            
-        else:
-            print('WARNING: Did not recognize function type: ',func)
-            out = xarr
-            
-        return out
+    
     
     xarr = np.linspace(obj['graph']['xrange'][0],obj['graph']['xrange'][1],100)
     yarr = func_from_x(obj['func'],xarr)
     # print(obj['graph']['xrange'][0],obj['graph']['xrange'][1])
     # print(xarr,yarr)
-    ax.plot(xarr,yarr)
+    ax.plot(xarr,yarr, c=(235/256.,105/256.,10/256.))
     
     format_graph(ax)
     
@@ -289,6 +331,9 @@ def make_pages(loc,fname_list):
     padw,padh = (cellw-imagew)//2,(cellh-imageh)//2
     
     groups = [fname_list[i:i+20] for i in range(0, len(fname_list), 20)]
+    
+    page_list = []
+    
     for ind_group, group in enumerate(groups):
         print(ind_group,group)
         page = Image.new('RGB', (width, height), 'white')
@@ -323,8 +368,11 @@ def make_pages(loc,fname_list):
         for i in range(5):
             draw.line( [(0,i*cellh),(width,i*cellh)] ,width=lw, fill=256)
         
-        
-        page.save(loc+'page{}.pdf'.format(ind_group))
+        save_fname = loc+'page{}.pdf'.format(ind_group)
+        page.save(save_fname)
+        page_list.append(save_fname)
+    
+    merge_pdfs(page_list,loc+"pages.pdf")
 
 
 def main():
@@ -333,12 +381,14 @@ def main():
 
     print( "Making .. ",loc, fname )
     
+    print("> Make json")
     make_json_file(loc+fname)
     
     in_obj_list = load_json_file(loc+fname)
     
     
     # Make figures per object
+    print("> Make figures")
     if True:
         for i in range(len(in_obj_list)):
             obj = in_obj_list[i]
@@ -346,6 +396,7 @@ def main():
             make_figures(loc,obj)
     
     # Combine figures to page
+    print("> Make Pages")
     fnames = make_fname_list(loc,in_obj_list)
     make_pages(loc,fnames)
     
