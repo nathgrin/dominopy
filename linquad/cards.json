@@ -33,7 +33,7 @@
     },
     {
         "formula": {
-            "text": "$y=0.5$",
+            "text": "$y=\\frac{1}{2}$",
             "fname": "poly_deg0_0.5_formula.png"
         },
         "graph": {
@@ -395,7 +395,7 @@
     },
     {
         "formula": {
-            "text": "$y=0.5x$",
+            "text": "$y=\\frac{1}{2}x$",
             "fname": "poly_deg1_0.5_formula.png"
         },
         "graph": {
@@ -461,7 +461,7 @@
     },
     {
         "formula": {
-            "text": "$y=-0.5x$",
+            "text": "$y=-\\frac{1}{2}x$",
             "fname": "poly_deg1_-0.5_formula.png"
         },
         "graph": {

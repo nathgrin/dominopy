@@ -111,6 +111,18 @@ def make_json_file(fname):
         
         return thedict
     
+    def format_if_fraction(term):
+        from fractions import Fraction
+        # print(Fraction(term).as_integer_ratio())
+        int_ratio = Fraction(term).as_integer_ratio()
+        if int_ratio[1] == 1:
+            return str(term)
+        else:
+            if int_ratio[0] < 0:
+                return r"-\frac{%i}{%i}"%(-1*int_ratio[0],int_ratio[1])
+            else:
+                return r"\frac{%i}{%i}"%(int_ratio[0],int_ratio[1])
+    
     def func_to_text(func):
         the_text = ""
         if func['type'] == 'polynomial':
@@ -121,10 +133,10 @@ def make_json_file(fname):
                     if the_text[-1] != "=":
                         the_text += "+"
                     if term != 1:
-                        the_text += str(term)
+                        the_text += format_if_fraction(term)
                 elif term < 0: # Negative
                     if term != -1:
-                        the_text += str(term)
+                        the_text += format_if_fraction(term)
                     else:
                         the_text += "-"
                     
@@ -314,52 +326,129 @@ def make_fname_list(loc,obj_list):
         fname_list.append(loc+obj[dictkeys[dict_inds[2*i+1]]]['fname'])
     fname_list.append(fname_list.pop(0)) # shift all by 1
     
+    # make groups of 2
+    fname_list = [ (fname_list[2*i],fname_list[2*i+1]) for i in range(len(fname_list)//2) ]
+    
     # print(fname_list)
     
     return fname_list
-def make_pages(loc,fname_list):
+
+def find_first_coprime(b,start=2):
+    from math import gcd        
+
+    def check_co_prime(num, M):
+        return gcd(num, M) == 1 
+
+    def get_smallest_co_prime(M):
+        for i in range(start, M): # for every number *i* starting from 2 up to M
+            if check_co_prime(i, M): # check if *i* is coprime with M
+                return i # if it is, return i as the result
+
+    return get_smallest_co_prime(b)
+
+def make_code(settings):
     
+    codetype = settings.get('type','iamodb')
+    n = settings.get('len',1)
     
+    loc = settings.get('loc',"numberpics/")
+        
+    if codetype == 'iamodb':
+        
+        b = n
+        a = settings.get('a',find_first_coprime(b,start=3*b//4))
+        
+        code_res = {'a':a,'b':b}
+        
+        code_res['code_list'] = [ loc+"%i.jpg"%(i*a % b) for i in range(n) ]
+        code_res['zero'] = loc+"ol_%i.jpg"%(a)
+        # code_res['code_list'][0] = code_res['zero']
+        
+        # print(a,b)
+        # print(code_res['code_list'])
+        
+    else:
+        print("WARNING: Could not find codetype: ",settings)
+        code_res = {'code_list':[]}
+    
+    return code_res
+    
+def make_pages(loc,fname_list,repeat=1):
+    
+    # Make code
+    code_settings = {'codetype':'iamodb','len':len(fname_list)}
+    code_res = make_code(code_settings)
+    code_list = code_res.get('code_list',[])
+    
+    # print(code_res)
     
     ## fname_list to page
-    from PIL import Image,ImageDraw
+    from PIL import Image,ImageDraw,ImageFont
 
     width, height = int(11.693 * 300),int(8.268 * 300) # A4 at 300dpi
     cellw,cellh = width//5,height//4
     imagew,imageh = int(1.9*300),int(1.9*300)
     # imagew,imageh = int(1.8*300),int(1.8*300)
     padw,padh = (cellw-imagew)//2,(cellh-imageh)//2
+    codeImw,codeImh = int(0.2*300),int(0.2*300)
     
-    groups = [fname_list[i:i+20] for i in range(0, len(fname_list), 20)]
+    
+    if repeat > 1:
+        old_code_list = code_res.get('code_list',[])
+        old_fname_list = fname_list
+
+        for i in range(repeat):
+            code_list.extend(old_code_list)
+            fname_list.extend(old_fname_list)
+        
+    
+    
+    groups = [fname_list[i:i+10] for i in range(0, len(fname_list), 10)]
+    groups_code = [code_list[i:i+10] for i in range(0, len(code_list), 10)]
     
     page_list = []
     
+    # For each page
     for ind_group, group in enumerate(groups):
-        print(ind_group,group)
+        group_code = groups_code[ind_group]
+        print(ind_group,group,group_code)
         page = Image.new('RGB', (width, height), 'white')
-        
-        xi,ytoggle,yrow = 0,0,0
-        for fname in group:
-            # print(xi,ytoggle,yrow)
-            xcoord = padw + xi*cellw
-            ycoord = padh + (yrow+ytoggle)*cellh
-            # print(xcoord,ycoord)
-            
-            with Image.open(fname) as Im:
-                if ytoggle == 0:
-                    Im = Im.rotate(180)
-                Im = Im.resize((imagew,int(Im.height*imagew/Im.width)))
-                page.paste(Im, box=(xcoord, ycoord))
-            
-            if ytoggle:
-                if xi != 4:
-                    xi += 1
-                else:
-                    xi = 0
-                    yrow += 2
-            ytoggle = 1-ytoggle
-            
         draw = ImageDraw.Draw(page)
+            
+        xi,yrow = 0,0
+        for ind_card,card in enumerate(group):
+            
+            for toggle in range(2):
+                fname = card[toggle]
+                # print(xi,ytoggle,yrow)
+                xcoord = padw + xi*cellw
+                ycoord = padh + (yrow+toggle)*cellh
+                # print(xcoord,ycoord)
+                with Image.open(fname) as Im:
+                    if toggle == 0:
+                        Im = Im.rotate(180)
+                    Im = Im.resize((imagew,int(Im.height*imagew/Im.width)))
+                    page.paste(Im, box=(xcoord, ycoord))
+                
+                code = group_code[ind_card]
+                code_x,code_y = xcoord-padw+codeImw//2,ycoord-padh//2
+                with Image.open(code) as codeIm:
+                    if toggle == 0:
+                        codeIm = codeIm.rotate(180)
+                        code_x = -1*code_x + (2*xi+1)*cellw
+                        code_y = -1*code_y + (2*yrow+1)*cellh
+                        code_x += -codeImw
+                        code_y += -codeImh
+                    codeIm = codeIm.resize((codeImw,int(codeIm.height*codeImw/codeIm.width)))
+                    page.paste(codeIm, box=(code_x,code_y))
+                # draw.text((xcoord-padw//2,ycoord),code,font=font, fill=(0, 0, 0, 255))
+
+            if xi != 4:
+                xi += 1
+            else:
+                xi = 0
+                yrow += 2
+            
         
         lw = 20
         # draw.line( (0, page.size[1], page.size[0], 0) ,width=lw, fill=128)
@@ -375,7 +464,46 @@ def make_pages(loc,fname_list):
     merge_pdfs(page_list,loc+"pages.pdf")
 
 
+def generate_numberpics():
+    
+    
+    for i in range(100):
+        
+        for j in range(2):
+            fig = plt.figure(figsize=(2,2),frameon=True) # (8.26772,11.6929)
+            ax =  fig.add_axes((0, 0, 1, 1))#fig.add_subplot(111)
+            
+            fig.subplots_adjust(left=0,right=1.,bottom=0,top=1.,wspace=0.,hspace=0.)
+            
+            ax.spines['left'].set_color('none')
+            ax.spines['left'].set_position('center')
+            ax.spines['right'].set_color('none')
+            ax.spines['right'].set_position('center')
+            ax.spines['bottom'].set_color('none')
+            ax.spines['bottom'].set_position('center')
+            ax.spines['top'].set_color('none')
+            ax.spines['top'].set_position('center')
+            ax.set_xticks([], [])
+            ax.set_yticks([], [])
+            
+            if j:
+                the_text = "$%i$"%i
+                fname = '%i.jpg'%i
+            else:
+                the_text = "$\overline{%i}$"%i
+                fname = 'ol_%i.jpg'%i
+            ax.text(0.5,0.5,the_text, size=88, horizontalalignment='center', verticalalignment='center',transform =ax.transAxes)
+            fig.savefig('numberpics/'+fname)#,bbox_inches='tight' )
+            plt.close(fig)
+        
+
+    
+    
+
 def main():
+    
+    # generate_numberpics()
+    
     loc = "linquad/"
     fname = "cards.json"
 
