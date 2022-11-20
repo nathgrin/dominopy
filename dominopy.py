@@ -22,6 +22,58 @@ plt.rc(('xtick','ytick'), labelsize=8)#, direction='in' )
 # plt.rc('image',cmap='gist_rainbow')
 
 
+def get_functions():
+    # funcs = [
+    #     {'type': 'polynomial','coeff': [2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [0.5]},# ax^2 + bx + c
+        
+    #     {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [2,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-3,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-0.5,0]},# ax^2 + bx + c
+        
+    #     {'type': 'polynomial','coeff': [1,0,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,0,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,0,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0,4]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,-2,0]}# ax^2 + bx + c
+    # ]
+    
+    # funcs = [ # simple
+    #     {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
+        
+    #     {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+        
+    # ]
+    
+    funcs = [ # harder
+        {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+        
+    ]
+    return funcs
+
 def merge_pdfs(filenames,outfilename,delete=False):
     ''' () -> float
 
@@ -162,32 +214,7 @@ def make_json_file(fname):
         names.append(name)
         return name,names
     
-    funcs = [
-        {'type': 'polynomial','coeff': [2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [0.5]},# ax^2 + bx + c
-        
-        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [2,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-3,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-0.5,0]},# ax^2 + bx + c
-        
-        {'type': 'polynomial','coeff': [1,0,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,0,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,0,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0,4]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,-2,0]}# ax^2 + bx + c
-    ]
+    funcs = get_functions()
     
     names = []
     
@@ -316,7 +343,15 @@ def make_fname_list(loc,obj_list):
             dict_inds = dict_inds[:2*len(order)]
             break
     
-    # print(dict_inds)
+    print(dict_inds)
+    if dict_inds[0] == 1:
+        dict_inds[0] = 2
+    else:
+        dict_inds[1] = 2
+    if dict_inds[5] == 1:
+        dict_inds[5] = 2
+    else:
+        dict_inds[6] = 2
     
     fname_list = []
     for i,ind in enumerate(order):
@@ -373,12 +408,14 @@ def make_code(settings):
     
     return code_res
     
-def make_pages(loc,fname_list,repeat=1):
+def make_pages(loc,fname_list,out_fname=None,repeat=1):
+    if out_fname is None: out_fname = "pages"
     
     # Make code
-    code_settings = {'codetype':'iamodb','len':len(fname_list)}
+    code_settings = {'codetype':'iamodb','len':len(fname_list)}#,'a':13}
     code_res = make_code(code_settings)
     code_list = code_res.get('code_list',[])
+    print("CODE: a=%i, b=%i, n=%i"%(code_res['a'],code_res['b'],len(code_list)))
     
     # print(code_res)
     
@@ -394,10 +431,10 @@ def make_pages(loc,fname_list,repeat=1):
     
     
     if repeat > 1:
-        old_code_list = code_res.get('code_list',[])
-        old_fname_list = fname_list
+        old_code_list = code_list[:]
+        old_fname_list = fname_list[:]
 
-        for i in range(repeat):
+        for i in range(repeat-1):
             code_list.extend(old_code_list)
             fname_list.extend(old_fname_list)
         
@@ -416,7 +453,12 @@ def make_pages(loc,fname_list,repeat=1):
         draw = ImageDraw.Draw(page)
             
         xi,yrow = 0,0
-        for ind_card,card in enumerate(group):
+        # order = np.random.permutation(len(group)) # random order like this doesnt work when cards are repeated :s
+        order = np.random.permutation(len(group))
+        # order = range(len(group))
+        for ind_card in order:
+            card = group[ind_card]
+            code = group_code[ind_card]
             
             for toggle in range(2):
                 fname = card[toggle]
@@ -430,7 +472,6 @@ def make_pages(loc,fname_list,repeat=1):
                     Im = Im.resize((imagew,int(Im.height*imagew/Im.width)))
                     page.paste(Im, box=(xcoord, ycoord))
                 
-                code = group_code[ind_card]
                 code_x,code_y = xcoord-padw+codeImw//2,ycoord-padh//2
                 with Image.open(code) as codeIm:
                     if toggle == 0:
@@ -457,11 +498,11 @@ def make_pages(loc,fname_list,repeat=1):
         for i in range(5):
             draw.line( [(0,i*cellh),(width,i*cellh)] ,width=lw, fill=256)
         
-        save_fname = loc+'page{}.pdf'.format(ind_group)
+        save_fname = loc+out_fname+'_{}.pdf'.format(ind_group)
         page.save(save_fname)
         page_list.append(save_fname)
     
-    merge_pdfs(page_list,loc+"pages.pdf")
+    merge_pdfs(page_list,loc+out_fname+".pdf")
 
 
 def generate_numberpics():
@@ -504,8 +545,10 @@ def main():
     
     # generate_numberpics()
     
+    name = "harder_4lin1qua_withtable"
+    
     loc = "linquad/"
-    fname = "cards.json"
+    fname = "%s.json"%(name)
 
     print( "Making .. ",loc, fname )
     
@@ -525,8 +568,9 @@ def main():
     
     # Combine figures to page
     print("> Make Pages")
+    out_fname = name
     fnames = make_fname_list(loc,in_obj_list)
-    make_pages(loc,fnames)
+    make_pages(loc,fnames,out_fname=out_fname)#,repeat=2)
     
     
 if __name__ == "__main__":
