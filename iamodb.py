@@ -19,7 +19,7 @@ def main():
     n = 8
     b = n
     a = find_first_coprime(b,start=b+1)
-    a=5
+    a = 13
     print(a,b,n)
     for i in range(n):
         print('%03i %i'%(i,i*a % b))

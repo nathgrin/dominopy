@@ -399,7 +399,7 @@ def make_code(settings):
         code_res['code_list'] = [ loc+"%i.jpg"%(i*a % b) for i in range(n) ]
         code_res['code_n'] = [(i*a % b) for i in range(n)]
         code_res['zero'] = loc+"ol_%i.jpg"%(a)
-        code_res['code_list'][0] = code_res['zero']
+        # code_res['code_list'][0] = code_res['zero']
         
         # print(a,b)
         # print(code_res['code_list'])
@@ -410,11 +410,12 @@ def make_code(settings):
     
     return code_res
     
-def make_pages(loc,fname_list,out_fname=None,repeat=1,random_order = False):
+def make_pages(loc,fname_list,out_fname=None,
+               code_settings={},
+               repeat=1,random_order = False):
     if out_fname is None: out_fname = "pages"
     
     # Make code
-    code_settings = {'codetype':'iamodb','len':len(fname_list)}#,'a':13}
     code_res = make_code(code_settings)
     code_list = code_res.get('code_list',[])
     print("CODE: a=%i, b=%i, n=%i"%(code_res['a'],code_res['b'],len(code_list)))
@@ -573,7 +574,13 @@ def main():
     print("> Make Pages")
     out_fname = name
     fnames = make_fname_list(loc+"figures/",in_obj_list)
-    make_pages(loc,fnames,out_fname=out_fname,random_order=True)#,repeat=2)
+    
+    
+    code_settings = {'codetype':'iamodb','len':len(fnames),'a':5
+                     }
+    
+    make_pages(loc,fnames,out_fname=out_fname,
+               code_settings=code_settings,random_order=True)#,repeat=2)
     
     
 if __name__ == "__main__":
