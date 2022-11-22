@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import random
 
 plt.rc('font',family='STIXGeneral',size=12) # STIX looks like latex
 plt.rc('mathtext',fontset='stix')
@@ -396,8 +397,9 @@ def make_code(settings):
         code_res = {'a':a,'b':b}
         
         code_res['code_list'] = [ loc+"%i.jpg"%(i*a % b) for i in range(n) ]
+        code_res['code_n'] = [(i*a % b) for i in range(n)]
         code_res['zero'] = loc+"ol_%i.jpg"%(a)
-        # code_res['code_list'][0] = code_res['zero']
+        code_res['code_list'][0] = code_res['zero']
         
         # print(a,b)
         # print(code_res['code_list'])
@@ -408,7 +410,7 @@ def make_code(settings):
     
     return code_res
     
-def make_pages(loc,fname_list,out_fname=None,repeat=1):
+def make_pages(loc,fname_list,out_fname=None,repeat=1,random_order = False):
     if out_fname is None: out_fname = "pages"
     
     # Make code
@@ -429,6 +431,9 @@ def make_pages(loc,fname_list,out_fname=None,repeat=1):
     padw,padh = (cellw-imagew)//2,(cellh-imageh)//2
     codeImw,codeImh = int(0.2*300),int(0.2*300)
     
+    if random_order:
+        random.shuffle(fname_list)
+        random.shuffle(code_list)
     
     if repeat > 1:
         old_code_list = code_list[:]
@@ -453,9 +458,7 @@ def make_pages(loc,fname_list,out_fname=None,repeat=1):
         draw = ImageDraw.Draw(page)
             
         xi,yrow = 0,0
-        # order = np.random.permutation(len(group)) # random order like this doesnt work when cards are repeated :s
-        order = np.random.permutation(len(group))
-        # order = range(len(group))
+        order = range(len(group))
         for ind_card in order:
             card = group[ind_card]
             code = group_code[ind_card]
@@ -564,13 +567,13 @@ def main():
         for i in range(len(in_obj_list)):
             obj = in_obj_list[i]
             
-            make_figures(loc,obj)
+            make_figures(loc+'figures/',obj)
     
     # Combine figures to page
     print("> Make Pages")
     out_fname = name
-    fnames = make_fname_list(loc,in_obj_list)
-    make_pages(loc,fnames,out_fname=out_fname)#,repeat=2)
+    fnames = make_fname_list(loc+"figures/",in_obj_list)
+    make_pages(loc,fnames,out_fname=out_fname,random_order=True)#,repeat=2)
     
     
 if __name__ == "__main__":
