@@ -229,6 +229,7 @@ def make_json_file(fname):
         the_text = func_to_text(func) # Make formula
         names.append(name)
         obj['name'] = name
+        obj['type'] = "formule_graph_table"
         obj['func'] = func# marshal.dumps(tstfunc.func_code)
         obj['formula']['text'] = the_text
         obj['formula']['fname'] = '%s_formula.png'%(name)
@@ -554,7 +555,7 @@ def main():
     loc = "linquad/"
     fname = "%s.json"%(name)
 
-    print( "Making .. ",loc, fname )
+    print( "Making .. ",loc, name )
     
     print("> Make json")
     make_json_file(loc+fname)
