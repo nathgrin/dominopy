@@ -1,0 +1,636 @@
+[
+    {
+        "formula": {
+            "text": "$y=-\\frac{7}{2}x-2$",
+            "fname": "poly_deg1_-3.5_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg1_-3.5_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg1_-3.5_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -3.5,
+                -2
+            ]
+        },
+        "name": "poly_deg1_-3.5",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=7x+2$",
+            "fname": "poly_deg1_7_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg1_7_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg1_7_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                7,
+                2
+            ]
+        },
+        "name": "poly_deg1_7",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=-\\frac{7}{2}x-$",
+            "fname": "poly_deg1_-3.5_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg1_-3.5_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg1_-3.5_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -3.5,
+                -1
+            ]
+        },
+        "name": "poly_deg1_-3.5_n1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{2}+2x+3$",
+            "fname": "poly_deg2_1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                2,
+                3
+            ]
+        },
+        "name": "poly_deg2_1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=-x^{2}+2x+3$",
+            "fname": "poly_deg2_-1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_-1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_-1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -1,
+                2,
+                3
+            ]
+        },
+        "name": "poly_deg2_-1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{2}+2x+4$",
+            "fname": "poly_deg2_1_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_1_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_1_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                2,
+                4
+            ]
+        },
+        "name": "poly_deg2_1_n1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=2x^{2}+2x+3$",
+            "fname": "poly_deg2_2_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_2_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_2_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                2,
+                2,
+                3
+            ]
+        },
+        "name": "poly_deg2_2",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=2x^{2}-2x+3$",
+            "fname": "poly_deg2_2_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_2_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_2_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                2,
+                -2,
+                3
+            ]
+        },
+        "name": "poly_deg2_2_n1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{2}+\\frac{5}{2}x+2$",
+            "fname": "poly_deg2_1_n2_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_1_n2_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_1_n2_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                2.5,
+                2
+            ]
+        },
+        "name": "poly_deg2_1_n2",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=2x^{2}-6x+\\frac{5}{2}$",
+            "fname": "poly_deg2_2_n2_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_2_n2_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_2_n2_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                2,
+                -6,
+                2.5
+            ]
+        },
+        "name": "poly_deg2_2_n2",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=2x^{2}+6x+\\frac{5}{2}$",
+            "fname": "poly_deg2_2_n3_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_2_n3_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_2_n3_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                2,
+                6,
+                2.5
+            ]
+        },
+        "name": "poly_deg2_2_n3",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=-x^{2}+x+$",
+            "fname": "poly_deg2_-1_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_-1_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_-1_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -1,
+                1,
+                1
+            ]
+        },
+        "name": "poly_deg2_-1_n1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=2x^{3}+2x^{2}+2x+2$",
+            "fname": "poly_deg3_2_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg3_2_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg3_2_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                2,
+                2,
+                2,
+                2
+            ]
+        },
+        "name": "poly_deg3_2",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=-x^{3}+2x^{2}+2x+3$",
+            "fname": "poly_deg3_-1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg3_-1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg3_-1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -1,
+                2,
+                2,
+                3
+            ]
+        },
+        "name": "poly_deg3_-1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=-x^{3}+2x^{2}+3$",
+            "fname": "poly_deg3_-1_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg3_-1_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg3_-1_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                -1,
+                2,
+                0,
+                3
+            ]
+        },
+        "name": "poly_deg3_-1_n1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{4}+3$",
+            "fname": "poly_deg4_1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg4_1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg4_1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                0,
+                0,
+                0,
+                3
+            ]
+        },
+        "name": "poly_deg4_1",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{2}+3$",
+            "fname": "poly_deg2_1_n3_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg2_1_n3_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg2_1_n3_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                0,
+                3
+            ]
+        },
+        "name": "poly_deg2_1_n3",
+        "type": "formule_graph_table"
+    },
+    {
+        "formula": {
+            "text": "$y=x^{4}+4$",
+            "fname": "poly_deg4_1_n1_formula.png"
+        },
+        "graph": {
+            "xrange": [
+                -5,
+                5
+            ],
+            "fname": "poly_deg4_1_n1_graph.png"
+        },
+        "table": {
+            "range": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+            ],
+            "fname": "poly_deg4_1_n1_table.png"
+        },
+        "func": {
+            "type": "polynomial",
+            "coeff": [
+                1,
+                0,
+                0,
+                0,
+                4
+            ]
+        },
+        "name": "poly_deg4_1_n1",
+        "type": "formule_graph_table"
+    }
+]

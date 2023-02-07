@@ -61,16 +61,42 @@ def get_functions():
         
     # ]
     
-    funcs = [ # harder
-        {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
+    # funcs = [ # harder
+    #     {'type': 'polynomial','coeff': [-1,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [0.5,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [-1,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [3,0]},# ax^2 + bx + c
         
-        {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
-        {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0,-2]},# ax^2 + bx + c
+    #     {'type': 'polynomial','coeff': [1,0,2]},# ax^2 + bx + c
+        
+    # ]
+    
+    funcs = [ # sn18
+        {'type': 'polynomial','coeff': [-3.5,-2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [7,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-3.5,-1]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [1,2,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,2,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,2,4]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [2,2,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [2,-2,3]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [1,2.5,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [2,-6,2.5]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [2,6,2.5]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,1,1]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [2,2,2,2]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,2,2,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [-1,2,0,3]},# ax^2 + bx + c
+        
+        {'type': 'polynomial','coeff': [1,0,0,0,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,3]},# ax^2 + bx + c
+        {'type': 'polynomial','coeff': [1,0,0,0,4]},# ax^2 + bx + c
         
     ]
     return funcs
@@ -79,12 +105,12 @@ def merge_pdfs(filenames,outfilename,delete=False):
     ''' () -> float
 
     '''
-    from PyPDF2 import PdfFileMerger, PdfFileReader
+    from PyPDF2 import PdfMerger,PdfReader#FileMerger, 
 
-    merger = PdfFileMerger()
+    merger = PdfMerger()
     for filename in filenames:
         with open(filename,'rb') as fd:
-            merger.append(PdfFileReader(fd))
+            merger.append(PdfReader(fd))
 
     while True:
         try:
@@ -551,6 +577,7 @@ def main():
     # generate_numberpics()
     
     name = "harder_4lin1qua_withtable"
+    name = "sn18"
     
     loc = "linquad/"
     fname = "%s.json"%(name)
